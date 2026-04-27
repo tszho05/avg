@@ -78,7 +78,9 @@ export class ExploreScene extends Phaser.Scene {
     this.target.set(this.player.x, this.player.y);
     this.inputReadyAt = this.time.now + 300;
     this.input.removeAllListeners('pointerdown');
+    this.input.removeAllListeners('pointermove');
     this.input.on('pointerdown', this.handlePointerDown, this);
+    this.input.on('pointermove', this.handlePointerMove, this);
     setStatus(['點擊地圖移動', '靠近角色或物件會觸發事件']);
   }
 
@@ -132,18 +134,36 @@ export class ExploreScene extends Phaser.Scene {
     this.target.set(pointer.worldX, pointer.worldY);
   }
 
+  private handlePointerMove(pointer: Phaser.Input.Pointer) {
+    if (!pointer.isDown || this.time.now < this.inputReadyAt) return;
+    this.target.set(pointer.worldX, pointer.worldY);
+  }
+
   private movePlayer(delta: number) {
     const current = new Phaser.Math.Vector2(this.player.x, this.player.y);
     const distance = current.distance(this.target);
     if (distance < 4) return;
     const step = Math.min(distance, (delta / 1000) * 190);
     const next = current.lerp(this.target, step / distance);
-    const body = new Phaser.Geom.Rectangle(next.x - 18, next.y - 22, 36, 44);
-    if (this.blockers.some((blocker) => Phaser.Geom.Intersects.RectangleToRectangle(blocker, body))) {
-      this.target.set(this.player.x, this.player.y);
+    if (this.isBlocked(next.x, next.y)) {
+      const slideX = new Phaser.Math.Vector2(next.x, current.y);
+      const slideY = new Phaser.Math.Vector2(current.x, next.y);
+      if (!this.isBlocked(slideX.x, slideX.y)) {
+        this.player.setPosition(slideX.x, slideX.y);
+        return;
+      }
+      if (!this.isBlocked(slideY.x, slideY.y)) {
+        this.player.setPosition(slideY.x, slideY.y);
+        return;
+      }
       return;
     }
     this.player.setPosition(next.x, next.y);
+  }
+
+  private isBlocked(x: number, y: number) {
+    const body = new Phaser.Geom.Rectangle(x - 18, y - 22, 36, 44);
+    return this.blockers.some((blocker) => Phaser.Geom.Intersects.RectangleToRectangle(blocker, body));
   }
 
   private checkTriggers() {
