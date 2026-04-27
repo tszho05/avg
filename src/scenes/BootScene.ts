@@ -7,20 +7,21 @@ export class BootScene extends Phaser.Scene {
   }
 
   preload() {
-    this.load.image('camp-base', '/assets/map/camp-base.png');
-    this.load.image('stars-bg', '/assets/minigames/stars-bg.png');
-    this.load.image('fleet-bg', '/assets/minigames/fleet-bg.png');
-    this.load.image('drum-bg', '/assets/minigames/drum-bg.png');
-    this.load.image('victory-ending', '/assets/endings/victory.png');
-    this.load.image('boat-prop', '/assets/props/prop-0.png');
-    this.load.image('tent-prop', '/assets/props/prop-1.png');
-    this.load.image('drum-prop', '/assets/props/prop-2.png');
-    this.load.image('arrows-prop', '/assets/props/prop-3.png');
-    this.load.image('portrait-caocao', '/assets/portraits/caocao.png');
-    this.load.image('portrait-lusu', '/assets/portraits/lusu.png');
-    this.load.image('portrait-zhouyu', '/assets/portraits/zhouyu.png');
-    this.load.image('portrait-zhuge', '/assets/portraits/zhuge.png');
-    this.load.spritesheet('characters', '/assets/characters/sheet-transparent.png', {
+    const asset = (path: string) => `${import.meta.env.BASE_URL}${path}`;
+    this.load.image('camp-base', asset('assets/map/camp-base.png'));
+    this.load.image('stars-bg', asset('assets/minigames/stars-bg.png'));
+    this.load.image('fleet-bg', asset('assets/minigames/fleet-bg.png'));
+    this.load.image('drum-bg', asset('assets/minigames/drum-bg.png'));
+    this.load.image('victory-ending', asset('assets/endings/victory.png'));
+    this.load.image('boat-prop', asset('assets/props/prop-0.png'));
+    this.load.image('tent-prop', asset('assets/props/prop-1.png'));
+    this.load.image('drum-prop', asset('assets/props/prop-2.png'));
+    this.load.image('arrows-prop', asset('assets/props/prop-3.png'));
+    this.load.image('portrait-caocao', asset('assets/portraits/caocao.png'));
+    this.load.image('portrait-lusu', asset('assets/portraits/lusu.png'));
+    this.load.image('portrait-zhouyu', asset('assets/portraits/zhouyu.png'));
+    this.load.image('portrait-zhuge', asset('assets/portraits/zhuge.png'));
+    this.load.spritesheet('characters', asset('assets/characters/sheet-transparent.png'), {
       frameWidth: 256,
       frameHeight: 256,
     });
