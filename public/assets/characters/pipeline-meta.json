@@ -1,0 +1,180 @@
+{
+  "target": "npc",
+  "mode": "idle",
+  "prompt": "Pixel art 2x2 Three Kingdoms character sheet for Zhuge Liang, Zhou Yu, Lu Su, Cao Cao on solid magenta background.",
+  "role": "",
+  "input": "C:\\Users\\user\\Desktop\\codex\\grass-boats-arrows\\public\\assets\\characters\\raw-sheet.png",
+  "threshold": 100,
+  "edge_threshold": 150,
+  "duration": 200,
+  "rows": 2,
+  "cols": 2,
+  "cell_size": 256,
+  "fit_scale": 0.82,
+  "trim_border": 4,
+  "edge_clean_depth": 3,
+  "align": "feet",
+  "shared_scale": true,
+  "component_mode": "largest",
+  "component_padding": 6,
+  "min_component_area": 1,
+  "edge_touch_margin": 0,
+  "frame_labels": [
+    "idle-1",
+    "idle-2",
+    "idle-3",
+    "idle-4"
+  ],
+  "frames": [
+    {
+      "grid": [
+        0,
+        0
+      ],
+      "source_box": [
+        0,
+        0,
+        627,
+        627
+      ],
+      "component_mode": "largest",
+      "component_count": 1,
+      "selected_component_area": 121170,
+      "selected_component_bbox": [
+        133,
+        54,
+        526,
+        578
+      ],
+      "crop_bbox": [
+        127,
+        48,
+        532,
+        584
+      ],
+      "edge_touch": false,
+      "output_size": [
+        147,
+        195
+      ],
+      "paste_position": [
+        54,
+        38
+      ]
+    },
+    {
+      "grid": [
+        0,
+        1
+      ],
+      "source_box": [
+        627,
+        0,
+        1254,
+        627
+      ],
+      "component_mode": "largest",
+      "component_count": 4,
+      "selected_component_area": 117517,
+      "selected_component_bbox": [
+        118,
+        38,
+        462,
+        578
+      ],
+      "crop_bbox": [
+        112,
+        32,
+        468,
+        584
+      ],
+      "edge_touch": false,
+      "output_size": [
+        129,
+        201
+      ],
+      "paste_position": [
+        63,
+        32
+      ]
+    },
+    {
+      "grid": [
+        1,
+        0
+      ],
+      "source_box": [
+        0,
+        627,
+        627,
+        1254
+      ],
+      "component_mode": "largest",
+      "component_count": 2,
+      "selected_component_area": 115231,
+      "selected_component_bbox": [
+        197,
+        10,
+        507,
+        568
+      ],
+      "crop_bbox": [
+        191,
+        4,
+        513,
+        574
+      ],
+      "edge_touch": false,
+      "output_size": [
+        117,
+        207
+      ],
+      "paste_position": [
+        69,
+        26
+      ]
+    },
+    {
+      "grid": [
+        1,
+        1
+      ],
+      "source_box": [
+        627,
+        627,
+        1254,
+        1254
+      ],
+      "component_mode": "largest",
+      "component_count": 2,
+      "selected_component_area": 141657,
+      "selected_component_bbox": [
+        73,
+        0,
+        485,
+        570
+      ],
+      "crop_bbox": [
+        67,
+        0,
+        491,
+        576
+      ],
+      "edge_touch": true,
+      "output_size": [
+        154,
+        209
+      ],
+      "paste_position": [
+        51,
+        24
+      ]
+    }
+  ],
+  "edge_touch_frames": [
+    [
+      1,
+      1
+    ]
+  ]
+}
