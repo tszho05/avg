@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import { flags } from '../systems/progress';
-import { clearHud, setStatus } from '../ui/domHud';
+import { clearHud, clearTouchPad, setStatus, showTouchPad } from '../ui/domHud';
 
 type MapObject = {
   id: string;
@@ -64,6 +64,7 @@ export class ExploreScene extends Phaser.Scene {
   private activeObject?: MapObject;
   private lastTrigger = 0;
   private inputReadyAt = 0;
+  private moveInput = new Phaser.Math.Vector2(0, 0);
 
   constructor() {
     super('ExploreScene');
@@ -73,6 +74,7 @@ export class ExploreScene extends Phaser.Scene {
     clearHud();
     this.activeObject = undefined;
     this.lastTrigger = 0;
+    this.moveInput.set(0, 0);
     this.drawMap();
     this.createPlayer();
     this.target.set(this.player.x, this.player.y);
@@ -82,6 +84,9 @@ export class ExploreScene extends Phaser.Scene {
     this.input.on('pointerdown', this.handlePointerDown, this);
     this.input.on('pointermove', this.handlePointerMove, this);
     setStatus(['點擊地圖移動', '靠近角色或物件會觸發事件']);
+    showTouchPad((x, y) => {
+      this.moveInput.set(x, y);
+    });
   }
 
   update(_time: number, delta: number) {
@@ -140,25 +145,37 @@ export class ExploreScene extends Phaser.Scene {
   }
 
   private movePlayer(delta: number) {
+    if (this.moveInput.lengthSq() > 0) {
+      const direction = this.moveInput.clone().normalize();
+      const step = (delta / 1000) * 190;
+      this.tryMoveTo(this.player.x + direction.x * step, this.player.y + direction.y * step);
+      this.target.set(this.player.x, this.player.y);
+      return;
+    }
+
     const current = new Phaser.Math.Vector2(this.player.x, this.player.y);
     const distance = current.distance(this.target);
     if (distance < 4) return;
     const step = Math.min(distance, (delta / 1000) * 190);
     const next = current.lerp(this.target, step / distance);
-    if (this.isBlocked(next.x, next.y)) {
-      const slideX = new Phaser.Math.Vector2(next.x, current.y);
-      const slideY = new Phaser.Math.Vector2(current.x, next.y);
-      if (!this.isBlocked(slideX.x, slideX.y)) {
-        this.player.setPosition(slideX.x, slideX.y);
+    this.tryMoveTo(next.x, next.y);
+  }
+
+  private tryMoveTo(x: number, y: number) {
+    const currentX = this.player.x;
+    const currentY = this.player.y;
+    if (this.isBlocked(x, y)) {
+      if (!this.isBlocked(x, currentY)) {
+        this.player.setPosition(x, currentY);
         return;
       }
-      if (!this.isBlocked(slideY.x, slideY.y)) {
-        this.player.setPosition(slideY.x, slideY.y);
+      if (!this.isBlocked(currentX, y)) {
+        this.player.setPosition(currentX, y);
         return;
       }
       return;
     }
-    this.player.setPosition(next.x, next.y);
+    this.player.setPosition(x, y);
   }
 
   private isBlocked(x: number, y: number) {
@@ -180,6 +197,7 @@ export class ExploreScene extends Phaser.Scene {
 
   private startNode(object: MapObject) {
     clearHud();
+    clearTouchPad();
     this.scene.start('AvgScene', { nodeId: object.node });
   }
 }
