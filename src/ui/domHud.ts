@@ -6,12 +6,34 @@ export function clearHud() {
   if (root) root.innerHTML = '';
 }
 
+export type ActionButton = {
+  label: string;
+  onPress: () => void;
+};
+
+function addPressListener(button: HTMLButtonElement, onPress: () => void) {
+  let pressedAt = 0;
+  const run = (event: Event) => {
+    event.preventDefault();
+    const now = Date.now();
+    if (now - pressedAt < 250) return;
+    pressedAt = now;
+    onPress();
+  };
+  button.addEventListener('pointerup', run);
+  button.addEventListener('click', run);
+}
+
 export function setStatus(items: string[]) {
   if (!root) return;
   root.querySelector('.status')?.remove();
   const status = document.createElement('div');
   status.className = 'status';
-  status.innerHTML = items.map((item) => `<span>${item}</span>`).join('');
+  items.forEach((item) => {
+    const span = document.createElement('span');
+    span.textContent = item;
+    status.append(span);
+  });
   root.append(status);
 }
 
@@ -51,6 +73,38 @@ export function clearTouchPad() {
   root?.querySelector('.touch-pad')?.remove();
 }
 
+export function clearActionPanel() {
+  root?.querySelector('.action-panel')?.remove();
+}
+
+export function showActionPanel(title: string, actions: ActionButton[]) {
+  if (!root) return;
+  clearTouchPad();
+  clearActionPanel();
+
+  const panel = document.createElement('section');
+  panel.className = 'action-panel';
+
+  const heading = document.createElement('div');
+  heading.className = 'action-title';
+  heading.textContent = title;
+  panel.append(heading);
+
+  const list = document.createElement('div');
+  list.className = `action-list action-list-${Math.max(actions.length, 1)}`;
+  actions.forEach((action) => {
+    const button = document.createElement('button');
+    button.className = 'action-button';
+    button.type = 'button';
+    button.textContent = action.label;
+    addPressListener(button, action.onPress);
+    list.append(button);
+  });
+
+  panel.append(list);
+  root.append(panel);
+}
+
 export function showDialogue(line: StoryLine & { choices?: StoryChoice[] }, onChoice: (choice?: StoryChoice) => void) {
   if (!root) return;
   clearHud();
@@ -72,7 +126,7 @@ export function showDialogue(line: StoryLine & { choices?: StoryChoice[] }, onCh
   hud.querySelectorAll('button').forEach((button) => {
     const hint = line.choices?.[Number(button.getAttribute('data-choice'))]?.hint;
     if (hint) button.title = hint;
-    button.addEventListener('pointerup', () => {
+    addPressListener(button, () => {
       const choiceIndex = button.getAttribute('data-choice');
       onChoice(choiceIndex === null ? undefined : line.choices?.[Number(choiceIndex)]);
     });

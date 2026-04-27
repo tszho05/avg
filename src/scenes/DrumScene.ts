@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import { flags } from '../systems/progress';
-import { clearHud, setStatus } from '../ui/domHud';
+import { clearActionPanel, clearHud, setStatus, showActionPanel } from '../ui/domHud';
 
 const totalBeats = 6;
 const hitWindowMs = 350;
@@ -52,6 +52,7 @@ export class DrumScene extends Phaser.Scene {
     this.add.image(drumX, drumY, 'drum-prop').setDisplaySize(250, 250).setDepth(2);
     this.add.circle(drumX, drumY, targetRingRadius).setStrokeStyle(6, 0xf4ca75, 0.72).setDepth(3);
     this.input.on('pointerup', () => this.hit());
+    showActionPanel('看準判定圈擊鼓', [{ label: '擊鼓', onPress: () => this.hit() }]);
     this.refreshStatus();
     this.startBeat();
   }
@@ -108,7 +109,12 @@ export class DrumScene extends Phaser.Scene {
     this.refreshStatus();
     if (this.misses > 3) {
       this.failed = true;
-      this.currentRing?.destroy();
+      if (this.currentRing) {
+        this.tweens.killTweensOf(this.currentRing);
+        this.currentRing.destroy();
+      }
+      this.currentRing = undefined;
+      clearActionPanel();
       this.time.delayedCall(350, () => this.scene.start('EndingScene', { ending: 'badDrum' }));
     }
   }
@@ -116,6 +122,7 @@ export class DrumScene extends Phaser.Scene {
   private finish() {
     if (this.failed) return;
     flags.drumScore = this.score;
+    clearActionPanel();
     this.scene.start('AvgScene', { nodeId: this.returnNode });
   }
 

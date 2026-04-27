@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import { flags } from '../systems/progress';
-import { clearHud } from '../ui/domHud';
+import { clearActionPanel, clearHud, showActionPanel } from '../ui/domHud';
 
 type Question = {
   prompt: string;
@@ -68,28 +68,19 @@ export class StarScene extends Phaser.Scene {
       align: 'center',
       wordWrap: { width: 680 },
     }).setOrigin(0.5);
-    question.options.forEach((option, i) => this.createOption(330 + i * 365, 520, option));
-  }
-
-  private createOption(x: number, y: number, label: string) {
-    const button = this.add.rectangle(x, y, 320, 82, 0x20394a, 0.92).setStrokeStyle(3, 0x9fc8c2);
-    const text = this.add.text(x, y, label, {
-      fontFamily: 'Microsoft JhengHei',
-      fontSize: label.length > 10 ? '20px' : '25px',
-      color: '#fff6e3',
-      fontStyle: 'bold',
-      align: 'center',
-      wordWrap: { width: 270 },
-    }).setOrigin(0.5);
-    [button, text].forEach((object) => {
-      object.setInteractive({ useHandCursor: true });
-      object.on('pointerup', () => this.answer(label));
-    });
+    showActionPanel(
+      '選擇答案',
+      question.options.map((option) => ({
+        label: option,
+        onPress: () => this.answer(option),
+      })),
+    );
   }
 
   private answer(label: string) {
     const question = questions[this.index];
     if (label !== question.answer) {
+      clearActionPanel();
       this.scene.start('EndingScene', { ending: 'badFogQuiz' });
       return;
     }
@@ -97,6 +88,7 @@ export class StarScene extends Phaser.Scene {
     if (this.index >= questions.length) {
       flags.fogReading = 3;
       flags.stage = 'fleet';
+      clearActionPanel();
       this.scene.start('AvgScene', { nodeId: this.returnNode });
       return;
     }

@@ -109,6 +109,47 @@ button:active {
   pointer-events: none;
 }
 
+.action-panel {
+  position: absolute;
+  left: 50%;
+  bottom: max(24px, env(safe-area-inset-bottom));
+  width: min(900px, calc(100vw - 36px));
+  transform: translateX(-50%);
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+  border: 2px solid rgba(215, 180, 106, 0.82);
+  border-radius: 8px;
+  background: rgba(13, 21, 28, 0.9);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.32);
+  pointer-events: auto;
+}
+
+.action-title {
+  color: #f4ca75;
+  font-size: 24px;
+  font-weight: 800;
+  text-align: center;
+}
+
+.action-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+}
+
+.action-list-2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.action-button {
+  min-height: 70px;
+  padding: 10px 18px;
+  font-size: 24px;
+  line-height: 1.25;
+  touch-action: manipulation;
+}
+
 .touch-pad {
   position: absolute;
   left: max(18px, env(safe-area-inset-left));
@@ -166,6 +207,27 @@ button:active {
 @media (max-width: 720px) {
   .line {
     font-size: 22px;
+  }
+
+  .action-panel {
+    bottom: max(14px, env(safe-area-inset-bottom));
+    width: min(94vw, calc(100vw - 20px));
+    padding: 12px;
+    gap: 10px;
+  }
+
+  .action-title {
+    font-size: 20px;
+  }
+
+  .action-list,
+  .action-list-2 {
+    grid-template-columns: 1fr;
+  }
+
+  .action-button {
+    min-height: 62px;
+    font-size: 21px;
   }
 
   .touch-pad {
